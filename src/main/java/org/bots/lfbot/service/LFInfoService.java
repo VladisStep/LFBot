@@ -1,6 +1,9 @@
-package org.bots.lfbot;
+package org.bots.lfbot.service;
 
 import lombok.AllArgsConstructor;
+import org.bots.lfbot.dto.ScheduleItemDto;
+import org.bots.lfbot.exception.ParseErrorException;
+import org.bots.lfbot.utils.DateUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,14 +21,14 @@ import java.util.stream.Collectors;
 public class LFInfoService {
 
     private final static Integer DAYS_COUNT_TO_RETURN = 10;
-
-    private final RestTemplate restTemplate;
-    private final SimpleDateFormat releaseDateFormat =
+    private final static String SCHEDULE_URL = "https://www.lostfilm.download/schedule/my_0/type_0";
+    private final static SimpleDateFormat RELEASE_DATE_FROMAT =
             new SimpleDateFormat("E, dd.M.yyyy", Locale.of("ru"));
 
-    public List<ScheduleItemDto> getScheduleInfo() {
-        String url = "https://www.lostfilm.download/schedule/my_0/type_0"; // todo
-        String html = restTemplate.getForObject(url, String.class);
+    private final RestTemplate restTemplate;
+
+    private List<ScheduleItemDto> getScheduleInfo() {
+        String html = restTemplate.getForObject(SCHEDULE_URL, String.class);
         Document document = Jsoup.parse(html);
         Elements elements = document.select("table.schedule-list > tbody > tr");
         return elements.select("tr")
@@ -67,21 +69,21 @@ public class LFInfoService {
      * @param element html element with date
      */
     private Date getReleaseDateFromElement(Element element) {
-        ;
         return element.select("td.delta")
                 .textNodes()
                 .stream()
                 .findFirst()
                 .map(textNode -> {
                     try {
-                        return releaseDateFormat.parse(textNode.text().trim());
+                        return RELEASE_DATE_FROMAT.parse(textNode.text().trim());
                     } catch (ParseException e) {
-                        // todo
-                        throw new RuntimeException(e);
+                        throw new ParseErrorException(
+                                "Error parsing string %s as date".formatted(textNode.text().trim()),
+                                e
+                        );
                     }
                 })
-                // todo add custom exception
-                .orElseThrow(() -> new RuntimeException("No release date"));
+                .orElseThrow(() -> new ParseErrorException("Error parsing release date"));
     }
 
 }

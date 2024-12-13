@@ -1,9 +1,12 @@
-package org.bots.lfbot;
+package org.bots.lfbot.utils;
+
+import lombok.experimental.UtilityClass;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class DateUtils {
+@UtilityClass
+public final class DateUtils {
 
     /**
      * @return the number of days between two {@link java.util.Date}

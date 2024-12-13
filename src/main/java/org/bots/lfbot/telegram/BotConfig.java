@@ -1,4 +1,4 @@
-package org.bots.lfbot.config;
+package org.bots.lfbot.telegram;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

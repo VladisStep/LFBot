@@ -1,6 +1,5 @@
-package org.bots.lfbot.config;
+package org.bots.lfbot.telegram;
 
-import org.bots.lfbot.TelegramBot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -25,7 +24,7 @@ public class BotInitializer {
         try{
             telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e){
-
+            e.printStackTrace();
         }
     }
 }
