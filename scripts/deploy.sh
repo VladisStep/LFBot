@@ -9,5 +9,5 @@ ssh -i $PUB_RSI_ID_PATH -t root@$LF_BOT_SERVER_IP << EOF
 pgrep java | xargs kill -9
 nohup java -jar /home/user/LFBot-0.0.1-SNAPSHOT-plain.jar > /home/user/log.txt &
 EOF
-echo
+echo "Bye"
 
